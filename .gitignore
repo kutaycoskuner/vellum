@@ -5,8 +5,20 @@
 /.data/
 
 # design references and test reports, kept local
-input/
-/reports/
+/.reports/
+
+# local-only parts: any folder starting with "-", route groups like (-private)
+-*/
+(-*)/
+
+_documentation
+_documentation/
+
+.agents/
+.claude/
+.linked_projects/
+.input/
+
 
 
 # ----------------------------------------------------------------------------------------

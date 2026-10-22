@@ -159,7 +159,9 @@
     margin-bottom: 6pt;
 }
 
+/* plain sans italic: CMU italic digits read too ornate for a date */
 .hw-due {
+    font-family: 'Source Sans 3 Variable', system-ui, sans-serif;
     font-style: italic;
 }
 
@@ -184,6 +186,11 @@
     font-weight: 700;
     white-space: nowrap;
     padding-right: 1em;
+}
+
+/* names a touch lighter than their labels, barely noticeable */
+.hw .hw-info td {
+    opacity: 0.9;
 }
 
 .hw-info a {

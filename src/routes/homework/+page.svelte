@@ -2,6 +2,8 @@
 	import { onMount, tick } from 'svelte';
 	import { renderMarkdown, splitFrontmatter, typesetMath } from '$lib/paged/markdown';
 	import { paginate } from '$lib/paged/paginate';
+	import { pageLanguage } from '$lib/stores/language';
+	import '@fontsource-variable/source-sans-3/wght-italic.css'; // due date line
 	import './page.css';
 
 	// frontmatter of /data/homework.md; same fields as metadata.tex in latex-templates/homework.
@@ -40,6 +42,16 @@
 		tr: { lecturer: 'Öğretim Üyesi:', tutor: 'Asistan:', student: 'Öğrenci:', due: 'Teslim:', page: (i, n) => `Sayfa ${i} / ${n}` }
 	};
 
+	// due date as "dd mmm yyyy" (23 Oct 2025), month in the sheet's language; text that isn't a
+	// readable date is shown as written
+	function formatDate(value: string, language: string): string {
+		const date = new Date(value);
+		if (Number.isNaN(date.getTime())) return value;
+		const day = String(date.getDate()).padStart(2, '0');
+		const month = date.toLocaleString(language, { month: 'short' }).replace(/\.$/, '');
+		return `${day} ${month} ${date.getFullYear()}`;
+	}
+
 	let homework: { meta: HomeworkMeta; html: string } | null = null;
 	let loading: boolean = true;
 	let sourceEl: HTMLDivElement; // hidden sheet the content is laid out in first
@@ -71,22 +83,26 @@
 		const result = paginate(sourceEl, pagesEl, { pageClass: 'hw-page', contentClass: 'hw' });
 		pageCount = result.pages.length;
 		tooTall = result.tooTall;
-		if (pageCount > 1) numberPages(pagesEl, label.page);
 	});
 
 	$: meta = homework?.meta;
 	$: missing = meta ? required.filter((path) => !String(get(meta, path) ?? '').trim()) : [];
-	$: label = labels[meta?.language ?? 'en'] ?? labels.en;
+	// a language picked in the browser wins over the frontmatter's
+	$: language = $pageLanguage ?? meta?.language ?? 'en';
+	$: label = labels[language] ?? labels.en;
+	// runs after pagination and again on every language change
+	$: if (pageCount > 1 && pagesEl) numberPages(pagesEl, label.page);
 
 	function parseHomework(text: string): { meta: HomeworkMeta; html: string } {
 		const { meta, body } = splitFrontmatter(text);
 		return { meta: meta as HomeworkMeta, html: renderMarkdown(body) };
 	}
 
-	// "Page i of n" in the bottom margin of every page; a single page gets none
+	// "Page i of n" in the bottom margin of every page, replacing any from before; a single page gets none
 	function numberPages(target: HTMLElement, text: (i: number, n: number) => string) {
 		const pages = [...target.children];
 		pages.forEach((page, i) => {
+			page.querySelector(':scope > .hw-page-number')?.remove();
 			const foot = document.createElement('div');
 			foot.className = 'hw-page-number';
 			foot.textContent = text(i + 1, pages.length);
@@ -132,7 +148,7 @@
 							.filter((value) => String(value ?? '').trim())
 							.join(' | ')}
 					</div>
-					<div class="hw-due">{label.due} {meta.dueDate}</div>
+					<div class="hw-due">{label.due} {formatDate(meta.dueDate, language)}</div>
 
 					<table class="hw-info">
 						<tbody>
