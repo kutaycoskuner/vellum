@@ -1,0 +1,29 @@
+{
+	"name": "Example Person",
+	"sender": {
+		"location": "Example City, Example Country",
+		"phone": "+00 000000000",
+		"email": "person@example.com"
+	},
+	"recipient": {
+		"addressee": "[Name or Team]",
+		"department": "[Department]",
+		"company": "[Organisation]",
+		"city": "[City]"
+	},
+	"place": "Example City, Example Country",
+	"date": "10 October 2026",
+	"title": "Letter",
+	"subject": "Request for [topic]",
+	"salutation": "Dear [Name or Team],",
+	"paragraphs": [
+		"I am writing to you about [topic]. [One or two sentences on the background: what happened, or why you are writing now.]",
+		"[The main point: what you are asking for, offering or letting them know, with the details they need -- dates, numbers, references.]",
+		"[What happens next: what you need from them and by when, or what you will do yourself.]",
+		"Thank you for your time. I look forward to hearing from you."
+	],
+	"closing": "Kind regards,",
+	"signature": "Example Person",
+	"signatureImage": "images/signature.png",
+	"language": "en"
+}

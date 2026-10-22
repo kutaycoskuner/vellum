@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="168" height="36" viewBox="0 0 168 36">
+	<circle cx="18" cy="18" r="13" fill="none" stroke="#49bf9d" stroke-width="3" />
+	<circle cx="18" cy="18" r="4.5" fill="#49bf9d" />
+	<text x="40" y="25" font-family="Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#333333">Example Co</text>
+</svg>

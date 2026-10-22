@@ -1,0 +1,225 @@
+/* body margin and background are set in src/app.html */
+
+/* ----------------------------------------------------------------- */
+/* 1. TOKENS */
+/* ----------------------------------------------------------------- */
+
+.a4-visual-guide {
+    --paper: #fdfdfd; /* same as the CV; #ece6e1 gives the warm look of the example */
+    --ink: #242526;
+    --muted: #8a8a8a;
+}
+
+/* ----------------------------------------------------------------- */
+/* 2. PRINT MEDIA QUERY FOR A4 PDF GENERATION (CRITICAL) */
+/* ----------------------------------------------------------------- */
+
+@page {
+    size: A4;
+    margin: 0; /* Ensures the browser doesn't add extra margins */
+}
+
+@media print {
+    .a4-visual-guide {
+        width: 210mm !important;
+        height: 297mm !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+    }
+
+    /* Hide the screen-only limit line and missing-field notice */
+    .a4-limit,
+    .letter-missing {
+        display: none !important;
+    }
+
+    /* keeps its space, prints nothing (no stray "signature" text for ATS) */
+    .letter-sign-placeholder {
+        visibility: hidden;
+    }
+}
+
+/* ----------------------------------------------------------------- */
+/* 3. SCREEN & BASE LAYOUT STYLES */
+/* ----------------------------------------------------------------- */
+
+.a4-visual-guide {
+    /* A4 dimensions for screen visualization */
+    width: 210mm;
+    height: 297mm;
+    margin: 20px auto;
+    background: var(--paper);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+    box-sizing: border-box;
+    overflow: hidden; /* single page: anything past the bottom is cut, not flowed */
+}
+
+/* ----------------------------------------------------------------- */
+/* 4. LETTER: recipient / title / body / footer as one block, centred vertically, slightly high */
+/* ----------------------------------------------------------------- */
+
+.letter {
+    font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-variant-ligatures: none; /* keeps pdftotext output free of ligature glyphs */
+    color: var(--ink);
+    height: 100%;
+    box-sizing: border-box;
+    padding: 20mm 22mm 30mm 22mm; /* top : bottom = 2 : 3, like the spacers below */
+    display: flex;
+    flex-direction: column;
+}
+
+/* free space split 2 above : 3 below, so the block sits a little above centre;
+   both shrink to 0 before the content would leave the page */
+.letter::before,
+.letter::after {
+    content: '';
+    flex: 2 1 0;
+}
+
+.letter::after {
+    flex-grow: 3;
+}
+
+/* --- recipient (top left) --- */
+.letter-recipient {
+    font-size: 8.8pt;
+    line-height: 1.7;
+    opacity: 0.65;
+}
+
+.letter-to {
+    color: var(--muted);
+    font-size: 7.5pt;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+}
+
+.letter-addressee {
+    font-size: 10pt;
+    font-weight: 700;
+}
+
+/* --- "Title | subject" | date + place --- */
+.letter-head {
+    margin-top: 12mm;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline; /* title line sits on the same baseline as the date */
+    gap: 10mm;
+}
+
+.letter-title {
+    font-size: 12pt;
+    font-weight: 700;
+    line-height: 1.4;
+    overflow-wrap: break-word; /* a long subject wraps at words onto the next line */
+}
+
+.letter-subject {
+    font-weight: 400;
+    color: var(--muted);
+}
+
+.letter-date {
+    text-align: right;
+    font-size: 8.8pt;
+    line-height: 1.7;
+    white-space: nowrap;
+}
+
+.letter-date-day {
+    font-weight: 700;
+}
+
+.letter-date-place {
+    color: var(--muted);
+}
+
+/* --- body (gap on the right) --- */
+.letter-body {
+    margin-top: 10mm;
+    margin-right: 18mm; /* ~75 characters per line; title row and footer still reach the margin */
+    font-size: 10pt;
+    line-height: 1.65;
+    text-align: justify;
+    hyphens: auto;
+}
+
+.letter-body p {
+    margin: 0 0 4.5mm 0;
+}
+
+.letter-salutation {
+    font-weight: 700;
+}
+
+.letter-body .letter-closing {
+    margin: 7mm 0 0 0;
+    text-align: left;
+}
+
+/* --- footer: signature + name | phone + email --- */
+.letter-foot {
+    margin-top: 6mm;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline; /* name and phone share the top line */
+    gap: 10mm;
+    font-size: 8.8pt;
+    line-height: 1.7; /* one line height for both columns, so the rows line up */
+}
+
+/* emphasis steps: body 1 > recipient 0.65 > own contact 0.5 */
+.letter-contact {
+    opacity: 0.5;
+    text-align: right;
+}
+
+.letter-signature {
+    font-weight: 700;
+}
+
+/* room for the signature image (data/images/, set by signatureImage) */
+.letter-sign-slot {
+    width: 50mm;
+    height: 26mm; /* signatures are roughly square: height sets their size */
+    margin-top: 1.5mm;
+}
+
+.letter-sign-slot img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* whole signature visible, never stretched */
+    object-position: left center;
+    display: block;
+}
+
+/* no image yet: dashed box, only on screen */
+.letter-sign-placeholder {
+    box-sizing: border-box;
+    border: 1px dashed var(--muted);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 7.5pt;
+    letter-spacing: 0.1em;
+    opacity: 0.5;
+}
+
+/* --- missing fields / overflow notice (screen only) --- */
+.letter-missing {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 2mm 22mm;
+    background: #ffe3e3;
+    color: #b00020;
+    font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 8pt;
+}

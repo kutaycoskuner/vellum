@@ -1,0 +1,335 @@
+/* body margin and background are set in src/app.html */
+
+/* ----------------------------------------------------------------- */
+/* 0. FONT: Computer Modern, the LaTeX default; self-hosted in static/fonts/cmu-serif (OFL) */
+/* ----------------------------------------------------------------- */
+
+@font-face {
+    font-family: 'CMU Serif';
+    src: url('/fonts/cmu-serif/cmunrm.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'CMU Serif';
+    src: url('/fonts/cmu-serif/cmunbx.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'CMU Serif';
+    src: url('/fonts/cmu-serif/cmunti.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'CMU Serif';
+    src: url('/fonts/cmu-serif/cmunbi.woff') format('woff');
+    font-weight: bold;
+    font-style: italic;
+}
+
+/* ----------------------------------------------------------------- */
+/* 1. TOKENS */
+/* ----------------------------------------------------------------- */
+
+.hw-doc {
+    --paper: #fdfdfd;
+    --ink: #1a1a1a;
+    --muted: #8a8a8a;
+    --margin: 25.4mm; /* geometry margin=1in, as in the LaTeX template */
+}
+
+/* ----------------------------------------------------------------- */
+/* 2. PRINT: each .hw-page is exactly one A4 sheet */
+/* ----------------------------------------------------------------- */
+
+@page {
+    size: A4;
+    margin: 0; /* the pages carry their own 1in padding */
+}
+
+@media print {
+    .hw-pages {
+        gap: 0 !important;
+        padding: 0 !important;
+    }
+
+    .hw-page {
+        margin: 0 !important;
+        box-shadow: none !important;
+        break-after: page;
+    }
+
+    .hw-page:last-child {
+        break-after: auto; /* no blank sheet at the end */
+    }
+
+    .hw-missing,
+    .hw-measure {
+        display: none !important;
+    }
+}
+
+/* ----------------------------------------------------------------- */
+/* 3. SCREEN: pages stacked with a gap, like a PDF viewer */
+/* ----------------------------------------------------------------- */
+
+.hw-pages {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.hw-page {
+    width: 210mm;
+    height: 297mm;
+    padding: var(--margin);
+    background: var(--paper);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    overflow: hidden; /* a block taller than a page is cut, and reported */
+    position: relative; /* anchors the page number */
+}
+
+/* "Page i of n", bottom right, in line with the text's right edge, outside the content area */
+.hw-page-number {
+    position: absolute;
+    right: var(--margin);
+    bottom: 8mm;
+    text-align: right;
+    font-family: 'CMU Serif', 'Latin Modern Roman', Georgia, 'Times New Roman', serif;
+    font-size: 9pt;
+    color: var(--muted);
+}
+
+/* the content is laid out here before it is split into pages */
+.hw-measure {
+    position: absolute;
+    top: 0;
+    left: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.hw-status {
+    color: var(--paper);
+    text-align: center;
+}
+
+/* ----------------------------------------------------------------- */
+/* 4. HOMEWORK: article class at 11pt, sizes follow LaTeX */
+/* ----------------------------------------------------------------- */
+
+.hw {
+    font-family: 'CMU Serif', 'Latin Modern Roman', Georgia, 'Times New Roman', serif;
+    font-size: 11pt;
+    line-height: 1.4;
+    color: var(--ink);
+}
+
+/* no space above the first block of a page */
+.hw > :first-child {
+    margin-top: 0;
+}
+
+/* --- title block (centred) --- */
+.hw-head {
+    text-align: center;
+}
+
+.hw-title {
+    font-size: 17.28pt; /* \LARGE */
+    font-weight: 700;
+    margin-bottom: 6pt;
+}
+
+.hw-lecture {
+    font-size: 14.4pt; /* \Large */
+    margin-bottom: 3pt;
+}
+
+.hw-institution {
+    font-size: 10pt; /* \small */
+    margin-bottom: 6pt;
+}
+
+.hw-due {
+    font-style: italic;
+}
+
+/* label column 0.12\textwidth, table 0.80\textwidth, centred */
+.hw .hw-info {
+    width: 80%;
+    margin: 6mm auto 0 auto;
+    border: 0;
+    text-align: left;
+}
+
+.hw .hw-info th,
+.hw .hw-info td {
+    border: 0;
+    padding: 0 0 3pt 0;
+    vertical-align: top;
+    text-align: left;
+}
+
+.hw .hw-info th {
+    width: 15%;
+    font-weight: 700;
+    white-space: nowrap;
+    padding-right: 1em;
+}
+
+.hw-info a {
+    color: inherit;
+    text-decoration: none; /* hyperref hidelinks */
+}
+
+.hw .hw-rule {
+    border: 0;
+    border-top: 0.4pt solid var(--ink);
+    margin: 2mm 0 5mm 0;
+}
+
+/* --- markdown body: headings like \section, \subsection, \subsubsection --- */
+.hw h1,
+.hw h2,
+.hw h3,
+.hw h4 {
+    font-weight: 700;
+    line-height: 1.25;
+    margin: 6mm 0 2.5mm 0;
+}
+
+.hw h1 {
+    font-size: 17.28pt;
+}
+
+.hw h2 {
+    font-size: 14.4pt;
+}
+
+.hw h3 {
+    font-size: 12pt;
+}
+
+.hw h4 {
+    font-size: 11pt;
+}
+
+.hw p {
+    margin: 0 0 2.5mm 0;
+    text-align: justify;
+    hyphens: auto;
+}
+
+.hw ol,
+.hw ul {
+    margin: 0 0 2.5mm 0;
+    padding-left: 2.2em;
+}
+
+.hw ol {
+    list-style: decimal;
+}
+
+.hw ul {
+    list-style: disc;
+}
+
+.hw ol ol {
+    list-style: lower-alpha; /* (a), (b) level as in enumerate */
+}
+
+.hw li {
+    margin-bottom: 1.5mm;
+}
+
+.hw li > p {
+    margin-bottom: 1mm;
+}
+
+.hw a {
+    color: inherit;
+}
+
+.hw strong {
+    font-weight: 700;
+}
+
+.hw em {
+    font-style: italic;
+}
+
+/* quote environment: indented both sides */
+.hw blockquote {
+    margin: 0 0 2.5mm 0;
+    padding: 0 2.5em;
+}
+
+.hw code {
+    font-family: 'CMU Typewriter Text', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 9.5pt;
+}
+
+.hw pre {
+    margin: 0 0 2.5mm 0;
+    padding: 2mm 3mm;
+    border-left: 0.8pt solid var(--muted);
+    white-space: pre-wrap;
+    line-height: 1.35;
+}
+
+/* booktabs: heavy top and bottom rule, light rule under the header */
+.hw table {
+    border-collapse: collapse;
+    margin: 0 auto 2.5mm auto;
+    border-top: 0.8pt solid var(--ink);
+    border-bottom: 0.8pt solid var(--ink);
+}
+
+.hw thead th {
+    border-bottom: 0.5pt solid var(--ink);
+    font-weight: 700;
+}
+
+.hw th,
+.hw td {
+    padding: 0.6mm 3mm;
+}
+
+.hw hr {
+    border: 0;
+    border-top: 0.4pt solid var(--ink);
+    margin: 4mm 0;
+}
+
+.hw img {
+    max-width: 100%;
+}
+
+/* display math sits centred on its own line */
+.hw mjx-container[display='true'] {
+    margin: 2mm 0 !important;
+}
+
+/* --- missing fields / overflow notice (screen only) --- */
+.hw-missing {
+    position: sticky;
+    top: 0;
+    z-index: 80;
+    width: 210mm;
+    margin: 0 auto;
+    box-sizing: border-box;
+    padding: 2mm var(--margin);
+    background: #ffe3e3;
+    color: #b00020;
+    font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+    font-size: 8pt;
+}
