@@ -364,6 +364,9 @@
 <!-- --------------------------------------------------------------------------------- -->
 <!-- 				Report (page 1: order sheet and contents, then the body)			   -->
 <!-- --------------------------------------------------------------------------------- -->
+<!-- tab title = default file name when saving as PDF -->
+<svelte:head><title>{report.title || 'report'}</title></svelte:head>
+
 <div class="rp-doc" style={docStyle} data-file={file} data-overflow={tooTall || ''} data-pages={pageCount || ''}>
 	{#if loading}
 		<p class="rp-message">Loading the report...</p>

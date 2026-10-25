@@ -8,6 +8,10 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 	}
+
+	// set in vite.config.ts: version from package.json, build day as dd-mmm-yyyy
+	const __APP_VERSION__: string;
+	const __BUILD_DATE__: string;
 }
 
 export {};

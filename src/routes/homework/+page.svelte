@@ -123,6 +123,9 @@
 <!-- --------------------------------------------------------------------------------- -->
 <!-- 				Homework (as many A4 pages as the content needs)				   -->
 <!-- --------------------------------------------------------------------------------- -->
+<!-- tab title = default file name when saving as PDF -->
+<svelte:head><title>{meta?.title ?? 'homework'}</title></svelte:head>
+
 <div class="hw-doc" data-missing={missing.join(',')} data-overflow={tooTall || ''} data-pages={pageCount || ''}>
 	{#if loading}
 		<p class="hw-status">Loading your homework...</p>

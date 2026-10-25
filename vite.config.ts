@@ -53,7 +53,18 @@ function personalData(): Plugin {
 	};
 }
 
+// shown in the bottom-left bar: the version from package.json and the day the site was built
+// (a deploy builds it, so the build date is the site's last update)
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const now = new Date();
+const buildDate = `${String(now.getDate()).padStart(2, '0')}-${MONTHS[now.getMonth()]}-${now.getFullYear()}`;
+const version: string = JSON.parse(fs.readFileSync('package.json', 'utf-8')).version;
+
 export default defineConfig({
+	define: {
+		__APP_VERSION__: JSON.stringify(version),
+		__BUILD_DATE__: JSON.stringify(buildDate)
+	},
 	plugins: [
 		personalData(),
 		tailwindcss(),

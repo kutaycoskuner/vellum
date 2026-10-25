@@ -1,6 +1,8 @@
 <script lang="ts">
 	import type { Component } from 'svelte';
 	import BasicNavigation from '$lib/components/BasicNavigation.svelte';
+	import BottomBar from '$lib/components/BottomBar.svelte';
+	import PageTools from '$lib/components/PageTools.svelte';
 
 	let { children } = $props();
 
@@ -17,6 +19,8 @@
 </svelte:head>
 
 <BasicNavigation />
+<PageTools />
+<BottomBar />
 
 {#each localGlobals as LocalGlobal, i (i)}
 	<LocalGlobal />
@@ -25,6 +29,12 @@
 {@render children()}
 
 <style>
+	/* print background colours and images without ticking "Background graphics" in the dialog */
+	:global(html) {
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+	}
+
 	/* MathJax SVG glyphs carry stroke-width="0": invisible on screen, but a PDF draws width 0 as
 	   the thinnest line the viewer can, so every glyph gets an outline and math looks bold */
 	:global(mjx-container svg path),

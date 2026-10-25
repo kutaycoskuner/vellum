@@ -8,7 +8,7 @@
 <p align="center">
     <picture>
         <source media="(prefers-color-scheme: dark)" srcset="docs/images/vellum-dark.png">
-        <img alt="vellum: a folded paper plane" src="docs/images/vellum-light.png" width="180">
+        <img alt="vellum: a folded paper plane" src="docs/images/vellum-light.png" width="240">
     </picture>
 </p>
 
@@ -38,7 +38,7 @@ pnpm dev            # http://localhost:5173 shows the three examples
 pnpm data           # optional: creates .data/ from the examples, so you can write your own
 ```
 
-Print from the browser: paper `A4`, margins `None`, `Background graphics` on.
+To get a PDF, click the PDF icon at the bottom left (or press Ctrl+P) and choose Save as PDF. Paper size, margins and background colours are already set by the page, and the file name comes from the document's title.
 
 ------------------------------------------------------------------------------------------
 

@@ -98,6 +98,9 @@
 <!-- --------------------------------------------------------------------------------- -->
 <!-- 				Letter (single page)											   -->
 <!-- --------------------------------------------------------------------------------- -->
+<!-- tab title = default file name when saving as PDF -->
+<svelte:head><title>{letter?.subject || 'letter'}</title></svelte:head>
+
 <div class="a4-visual-guide" data-missing={missing.join(',')} data-overflow={overflow || ''}>
 	<div class="a4-limit"></div>
 
