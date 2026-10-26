@@ -379,11 +379,20 @@
     border-bottom: 0;
 }
 
-.rp ul.rp-contents li > a::after {
-    content: '';
+/* leader: the svg line in each entry (LEADER in +page.svelte), dots on the text baseline */
+.rp .rp-leader {
     flex: 1;
-    border-bottom: 1px dotted var(--muted);
-    margin-bottom: 0.4em;
+    align-self: flex-end;
+    height: 2px;
+    margin-bottom: 0.3em;
+    overflow: visible;
+}
+
+.rp .rp-leader line {
+    stroke: var(--muted);
+    stroke-width: 1.1;
+    stroke-linecap: round;
+    stroke-dasharray: 0 4;
 }
 
 .rp ul.rp-contents ul a {

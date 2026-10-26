@@ -127,6 +127,10 @@
 	let pageCount = 0;
 	let tooTall = 0; // blocks taller than a page (cut); shown on screen and in data-overflow
 	let fontLink: HTMLLinkElement | null = null;
+	// contents leader: an inline svg line of round zero-length dashes -- vector dots of one
+	// size and spacing on screen and in print (dotted borders differ per browser, Chromium
+	// prints them as large uneven dashes) and no dots in copied text
+	const LEADER = '<svg class="rp-leader" aria-hidden="true"><line x1="0" y1="50%" x2="100%" y2="50%" /></svg>';
 	const WHOLE_TABLE_ROWS = 12; // tables up to this many rows move to the next page whole
 
 	onMount(async () => {
@@ -285,7 +289,7 @@
 			let parent: HTMLElement | null = null;
 			for (const heading of headings) {
 				const item = document.createElement('li');
-				item.innerHTML = `<a href="#${heading.id}">${heading.innerHTML}</a><span class="rp-contents-page" data-target="${heading.id}"></span>`;
+				item.innerHTML = `<a href="#${heading.id}">${heading.innerHTML}${LEADER}</a><span class="rp-contents-page" data-target="${heading.id}"></span>`;
 				if (heading.tagName === 'H2' || !parent) {
 					list.append(item);
 					parent = item;
