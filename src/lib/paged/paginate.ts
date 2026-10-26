@@ -1,10 +1,13 @@
-// splits a laid-out document into fixed-size pages (/homework, /report)
+// splits a laid-out document into fixed-size pages (/homework, /report, /article)
 
 export interface PaginateOptions {
 	pageClass: string; // the fixed-size sheet; its padding is the page margin
 	contentClass: string; // the flow box inside it, gets the source's lang
 	breakBefore?: (block: Element) => boolean; // starts a new page, e.g. chapter headings
 	keepWithNext?: (block: Element) => boolean; // never last on a page; default: headings
+	columns?: number; // columns per page, filled left to right; default 1
+	columnClass?: string; // each column's box inside the content box when columns > 1
+	firstPageHeader?: HTMLElement; // full-width block above the columns of page 1 (title, abstract)
 }
 
 const isHeading = (block: Element) => /^H[1-6]$/.test(block.tagName);
@@ -20,23 +23,39 @@ export function paginate(
 	options: PaginateOptions
 ): { pages: HTMLElement[]; tooTall: number } {
 	const keepWithNext = options.keepWithNext ?? isHeading;
-	// set by newPage() inside closures, so TS must not narrow it to null
+	const columns = options.columns ?? 1;
+	// set by nextBox() inside closures, so TS must not narrow it to null
 	let content = null as HTMLElement | null;
 	let available = 0;
 	let tooTall = 0;
+	let columnsLeft: HTMLElement[] = []; // empty columns of the current page
 
 	const newPage = () => {
 		const page = document.createElement('div');
 		page.className = options.pageClass;
-		content = document.createElement('div');
-		content.className = options.contentClass;
-		content.lang = source.lang;
-		page.append(content);
+		if (options.firstPageHeader && !target.childElementCount) page.append(options.firstPageHeader);
+		const flow = document.createElement('div');
+		flow.className = options.contentClass;
+		flow.lang = source.lang;
+		page.append(flow);
 		target.append(page);
+		if (columns > 1) {
+			columnsLeft = Array.from({ length: columns }, () => {
+				const column = document.createElement('div');
+				column.className = options.columnClass ?? '';
+				flow.append(column);
+				return column;
+			});
+		}
+		// from the top of the flow box (below a header) to the bottom page margin
 		const style = getComputedStyle(page);
-		available = page.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
+		const bottom = page.getBoundingClientRect().bottom - parseFloat(style.paddingBottom);
+		available = bottom - flow.getBoundingClientRect().top;
+		content = columns > 1 ? columnsLeft.shift()! : flow;
 		return content;
 	};
+	// the next empty column of this page, or a new page
+	const nextBox = () => (columnsLeft.length ? (content = columnsLeft.shift()!) : newPage());
 	// bottom margins don't count: the last block may end right at the page margin
 	const fits = (box: HTMLElement) => {
 		const last = box.lastElementChild;
@@ -48,12 +67,18 @@ export function paginate(
 		const block = queue.shift()!;
 		if (block.classList.contains('page-break')) {
 			block.remove();
-			if (content?.childElementCount) content = null;
+			if (content?.childElementCount) {
+				content = null;
+				columnsLeft = []; // a new page, not just the next column
+			}
 			continue;
 		}
-		if (options.breakBefore?.(block) && content?.childElementCount) content = null;
+		if (options.breakBefore?.(block) && content?.childElementCount) {
+			content = null;
+			columnsLeft = [];
+		}
 
-		const box: HTMLElement = content ?? newPage();
+		const box: HTMLElement = content ?? nextBox();
 		box.append(block);
 		if (fits(box)) continue;
 
@@ -78,7 +103,7 @@ export function paginate(
 			heading.remove();
 			carried.unshift(heading);
 		}
-		newPage().append(...carried);
+		nextBox().append(...carried);
 		queue.unshift(block);
 	}
 

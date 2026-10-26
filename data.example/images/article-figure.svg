@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 150" font-family="Georgia, serif" font-size="9">
+  <!-- example figure for data.example/article.md: a source column flowing onto a two-column page -->
+  <rect width="320" height="150" fill="#fdfdfd"/>
+
+  <!-- source column -->
+  <text x="40" y="12" text-anchor="middle" fill="#1a1a1a">source</text>
+  <rect x="15" y="18" width="50" height="124" fill="none" stroke="#9a9a9a" stroke-dasharray="3 2"/>
+  <rect x="20" y="24" width="40" height="6" rx="1" fill="#2a78d6"/>
+  <rect x="20" y="34" width="40" height="22" rx="1" fill="#c9c9c9"/>
+  <rect x="20" y="60" width="40" height="30" rx="1" fill="#c9c9c9"/>
+  <rect x="20" y="94" width="40" height="6" rx="1" fill="#2a78d6"/>
+  <rect x="20" y="104" width="40" height="32" rx="1" fill="#eb6834"/>
+
+  <!-- arrow -->
+  <path d="M82 80 H150" stroke="#1a1a1a" stroke-width="1.5" fill="none"/>
+  <path d="M150 76 L157 80 L150 84 Z" fill="#1a1a1a"/>
+  <text x="118" y="73" text-anchor="middle" fill="#1a1a1a">paginate</text>
+
+  <!-- page with two columns -->
+  <text x="240" y="12" text-anchor="middle" fill="#1a1a1a">page</text>
+  <rect x="175" y="18" width="130" height="124" fill="#ffffff" stroke="#1a1a1a"/>
+  <rect x="183" y="26" width="114" height="10" rx="1" fill="#e2e2e2"/>
+  <rect x="183" y="42" width="54" height="6" rx="1" fill="#2a78d6"/>
+  <rect x="183" y="52" width="54" height="22" rx="1" fill="#c9c9c9"/>
+  <rect x="183" y="78" width="54" height="30" rx="1" fill="#c9c9c9"/>
+  <rect x="243" y="42" width="54" height="6" rx="1" fill="#2a78d6"/>
+  <rect x="243" y="52" width="54" height="32" rx="1" fill="#eb6834"/>
+</svg>

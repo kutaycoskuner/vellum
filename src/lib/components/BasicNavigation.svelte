@@ -3,6 +3,7 @@
 	<a href="/letter">letter</a>
 	<a href="/homework">homework</a>
 	<a href="/report">report</a>
+	<a href="/article">article</a>
 </nav>
 
 <style>

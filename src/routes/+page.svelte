@@ -16,6 +16,10 @@
 			<a href="/report">report</a>
 			<span>company report with order sheet, contents and numbered sections · <code>.data/report.md</code></span>
 		</li>
+		<li>
+			<a href="/article">article</a>
+			<span>scientific article in two columns: authors, abstract, figures, charts, tables, references · <code>.data/article.md</code></span>
+		</li>
 	</ul>
 
 	<p class="note">Without a <code>.data/</code> folder the pages show the examples from <code>data.example/</code>.</p>

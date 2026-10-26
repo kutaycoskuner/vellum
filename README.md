@@ -21,6 +21,7 @@
 | `/letter` | single-page formal letter | `.data/letter.json` |
 | `/homework` | assignment sheet with TeX math, as many pages as needed | `.data/homework.md` |
 | `/report` | company report: order sheet, contents, numbered sections, company footer | `.data/report.md` |
+| `/article` | scientific article in two columns: authors, abstract, figures, charts, tables, references | `.data/article.md` |
 
 Every page is laid out as real A4 sheets on screen, so what you see is what prints.
 
@@ -34,7 +35,7 @@ Every page is laid out as real A4 sheets on screen, so what you see is what prin
 
 ```bash
 pnpm install
-pnpm dev            # http://localhost:5173 shows the three examples
+pnpm dev            # http://localhost:5173 shows the four examples
 pnpm data           # optional: creates .data/ from the examples, so you can write your own
 ```
 
@@ -100,9 +101,21 @@ Layout:
 
 ------------------------------------------------------------------------------------------
 
+## Article
+
+A journal-style article: title block across page 1, then the text in two columns. The full format is in [docs/article.md](docs/article.md).
+
+- frontmatter: `title`, `shortTitle`, `authors` (with `affiliations` numbers, `email`, `corresponding`), `affiliations`, `journal`, `volume`, `issue`, `year`, `doi`, `received` / `accepted` / `published`, `abstract`, `keywords`, `language`
+- body: numbered sections, numbered display equations, figures from images with captions, charts from a ` ```chart ` block, `Table:` captions, booktabs tables, indented blocks, `[n]` references
+- classes for what markdown can't say: `box`, `center`, `small`, `noindent`
+- running head with authors and short title from page 2, page numbers centred
+- open another file with `/article?file=<path in .data/>`
+
+------------------------------------------------------------------------------------------
+
 ## Markdown pages
 
-`/homework` and `/report` share the same rendering:
+`/homework`, `/report` and `/article` share the same rendering:
 
 - TeX math with MathJax: inline `$ ... $`, display `$$ ... $$`; `\$` is a plain dollar sign
 - a line reading `\newpage` starts a new page
@@ -118,13 +131,14 @@ Layout:
 vellum/
 ├── .data/                 # your own documents, gitignored (made by `pnpm data`)
 ├── data.example/          # committed examples, shown wherever .data/ has no file
-├── docs/images/           # README artwork: vellum.png (source), light and dark variants
+├── docs/                  # article.md: the article format; images/: README artwork
 ├── scripts/sync_data.py   # creates .data/ and keeps its keys in step with the examples
 ├── src/
-│   ├── lib/components/    # navigation
-│   ├── lib/paged/         # markdown, math and A4 pagination for /homework and /report
+│   ├── lib/components/    # navigation, bottom bar, page toolbar
+│   ├── lib/icons/         # one svelte component per icon
+│   ├── lib/paged/         # markdown, math, charts, dates and A4 pagination (1 or 2 columns)
 │   └── routes/<page>/     # one folder per page: +page.svelte and page.css
-├── static/fonts/          # Computer Modern for /homework
+├── static/fonts/          # Computer Modern for /homework and /article
 └── vite.config.ts         # dev plugin that serves .data/ with data.example/ as fallback
 ```
 

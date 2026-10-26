@@ -2,7 +2,9 @@
 	import { onMount, tick } from 'svelte';
 	import { renderMarkdown, splitFrontmatter, typesetMath } from '$lib/paged/markdown';
 	import { paginate } from '$lib/paged/paginate';
+	import { formatDate } from '$lib/paged/format';
 	import { pageLanguage } from '$lib/stores/language';
+	import '$lib/paged/cmu-serif.css';
 	import '@fontsource-variable/source-sans-3/wght-italic.css'; // due date line
 	import './page.css';
 
@@ -41,16 +43,6 @@
 		de: { lecturer: 'Dozent:', tutor: 'Tutor:', student: 'Student:', due: 'Abgabe:', page: (i, n) => `Seite ${i} von ${n}` },
 		tr: { lecturer: 'Öğretim Üyesi:', tutor: 'Asistan:', student: 'Öğrenci:', due: 'Teslim:', page: (i, n) => `Sayfa ${i} / ${n}` }
 	};
-
-	// due date as "dd mmm yyyy" (23 Oct 2025), month in the sheet's language; text that isn't a
-	// readable date is shown as written
-	function formatDate(value: string, language: string): string {
-		const date = new Date(value);
-		if (Number.isNaN(date.getTime())) return value;
-		const day = String(date.getDate()).padStart(2, '0');
-		const month = date.toLocaleString(language, { month: 'short' }).replace(/\.$/, '');
-		return `${day} ${month} ${date.getFullYear()}`;
-	}
 
 	let homework: { meta: HomeworkMeta; html: string } | null = null;
 	let loading: boolean = true;

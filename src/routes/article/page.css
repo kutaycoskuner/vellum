@@ -1,0 +1,460 @@
+/* body margin and background are set in src/app.html */
+
+/* font: Computer Modern from src/lib/paged/cmu-serif.css, imported in +page.svelte */
+
+/* ----------------------------------------------------------------- */
+/* 1. TOKENS */
+/* ----------------------------------------------------------------- */
+
+.ar-doc {
+    --paper: #fdfdfd;
+    --ink: #1a1a1a;
+    --muted: #6b6b6b;
+    --rule: 0.5pt solid var(--ink);
+    --margin-x: 18mm;
+    --margin-top: 20mm;
+    --margin-bottom: 22mm;
+    --gap: 6mm; /* between the columns */
+    --text-width: calc(210mm - 2 * var(--margin-x));
+    --column-width: calc((var(--text-width) - var(--gap)) / 2);
+    --serif: 'CMU Serif', 'Latin Modern Roman', Georgia, 'Times New Roman', serif;
+}
+
+/* ----------------------------------------------------------------- */
+/* 2. PRINT: each .ar-page is exactly one A4 sheet */
+/* ----------------------------------------------------------------- */
+
+@page {
+    size: A4;
+    margin: 0; /* the pages carry their own margins */
+}
+
+@media print {
+    .ar-pages {
+        gap: 0 !important;
+        padding: 0 !important;
+    }
+
+    .ar-page {
+        margin: 0 !important;
+        box-shadow: none !important;
+        break-after: page;
+    }
+
+    .ar-page:last-child {
+        break-after: auto; /* no blank sheet at the end */
+    }
+
+    .ar-missing,
+    .ar-measure {
+        display: none !important;
+    }
+}
+
+/* ----------------------------------------------------------------- */
+/* 3. SCREEN: pages stacked with a gap, like a PDF viewer */
+/* ----------------------------------------------------------------- */
+
+.ar-pages {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.ar-page {
+    width: 210mm;
+    height: 297mm;
+    padding: var(--margin-top) var(--margin-x) var(--margin-bottom);
+    background: var(--paper);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    overflow: hidden; /* a block taller than a column is cut, and reported */
+    position: relative; /* anchors running head and page number */
+    color: var(--ink);
+}
+
+/* the two columns, side by side under the title block */
+.ar-flow {
+    display: flex;
+    gap: var(--gap);
+    align-items: flex-start;
+}
+
+.ar-col {
+    width: var(--column-width);
+    flex: none;
+}
+
+/* running head from page 2: authors left, short title right */
+.ar-running {
+    position: absolute;
+    top: 10mm;
+    left: var(--margin-x);
+    right: var(--margin-x);
+    display: flex;
+    justify-content: space-between;
+    gap: 1em;
+    padding-bottom: 1mm;
+    border-bottom: 0.4pt solid #bdbdbd;
+    font-family: var(--serif);
+    font-size: 8pt;
+    font-style: italic;
+    color: var(--muted);
+}
+
+.ar-page-number {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 11mm;
+    text-align: center;
+    font-family: var(--serif);
+    font-size: 9pt;
+}
+
+/* the content is laid out here before it is split into pages */
+.ar-measure {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--text-width);
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.ar-status {
+    color: var(--paper);
+    text-align: center;
+}
+
+/* --- missing fields / overflow notice (screen only) --- */
+.ar-missing {
+    position: sticky;
+    top: 0;
+    z-index: 80;
+    width: 210mm;
+    margin: 0 auto;
+    box-sizing: border-box;
+    padding: 2mm var(--margin-x);
+    background: #ffe3e3;
+    color: #b00020;
+    font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+    font-size: 8pt;
+}
+
+/* ----------------------------------------------------------------- */
+/* 4. TITLE BLOCK: full width on page 1 */
+/* ----------------------------------------------------------------- */
+
+.ar-header {
+    margin-bottom: 6mm;
+    font-family: var(--serif);
+    color: var(--ink);
+}
+
+.ar-header a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.ar-journal {
+    display: flex;
+    justify-content: space-between;
+    gap: 1em;
+    margin-bottom: 7mm;
+    padding-bottom: 1.5mm;
+    border-bottom: var(--rule);
+    font-size: 8pt;
+    color: var(--muted);
+}
+
+.ar-title {
+    margin: 0 0 4mm;
+    font-size: 17pt;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+.ar-authors {
+    margin: 0 0 2.5mm;
+    font-size: 11pt;
+}
+
+.ar-header sup {
+    font-size: 6.5pt;
+    margin-left: 0.1em;
+}
+
+.ar-affiliations {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 8pt;
+    font-style: italic;
+    line-height: 1.35;
+}
+
+.ar-affiliations sup {
+    font-style: normal;
+    margin: 0 0.25em 0 0;
+}
+
+.ar-corresponding {
+    margin: 1mm 0 0;
+    font-size: 8pt;
+}
+
+.ar-dates {
+    margin: 1.5mm 0 0;
+    font-size: 8pt;
+    color: var(--muted);
+}
+
+.ar-abstract {
+    margin-top: 5mm;
+    padding: 3mm 0;
+    border-top: var(--rule);
+    border-bottom: var(--rule);
+    font-size: 9pt;
+    line-height: 1.35;
+    text-align: justify;
+    hyphens: auto;
+}
+
+.ar-abstract h2 {
+    margin: 0 0 1mm;
+    font-size: 9pt;
+    font-weight: bold;
+}
+
+.ar-abstract p {
+    margin: 0;
+}
+
+.ar-abstract p + p {
+    text-indent: 1.2em;
+}
+
+.ar-keywords {
+    margin: 2mm 0 0;
+    font-size: 9pt;
+}
+
+/* ----------------------------------------------------------------- */
+/* 5. BODY: 10pt Computer Modern, justified, paragraphs indented like LaTeX */
+/* ----------------------------------------------------------------- */
+
+.ar {
+    font-family: var(--serif);
+    font-size: 10pt;
+    line-height: 1.32;
+    color: var(--ink);
+    text-align: justify;
+    hyphens: auto;
+}
+
+/* no space above the first block of a column */
+.ar > :first-child {
+    margin-top: 0;
+}
+
+.ar p {
+    margin: 0;
+}
+
+/* a paragraph after a paragraph starts indented, after anything else flush */
+.ar p + p {
+    text-indent: 1.2em;
+}
+
+.ar h2,
+.ar h3,
+.ar h4 {
+    text-align: left;
+    hyphens: manual;
+    line-height: 1.25;
+}
+
+.ar h2 {
+    margin: 1.2em 0 0.45em;
+    font-size: 10.5pt;
+    font-weight: bold;
+}
+
+.ar h3 {
+    margin: 1em 0 0.35em;
+    font-size: 10pt;
+    font-weight: bold;
+    font-style: italic;
+}
+
+.ar h4 {
+    margin: 0.8em 0 0.25em;
+    font-size: 10pt;
+    font-weight: normal;
+    font-style: italic;
+}
+
+.ar-num {
+    display: inline-block;
+    min-width: 1.8em;
+    font-style: normal;
+}
+
+.ar a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.ar ul,
+.ar ol {
+    margin: 0.4em 0;
+    padding-left: 1.4em;
+}
+
+.ar li + li {
+    margin-top: 0.15em;
+}
+
+/* indented block (markdown "> ") */
+.ar blockquote {
+    margin: 0.6em 1.2em;
+    font-size: 9.5pt;
+}
+
+.ar code {
+    font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+    font-size: 8.5pt;
+}
+
+.ar pre {
+    margin: 0.6em 0;
+    padding: 0.4em 0.6em;
+    border-left: 2px solid #cfcfcf;
+    font-size: 8pt;
+    line-height: 1.35;
+    text-align: left;
+    white-space: pre-wrap;
+}
+
+.ar pre code {
+    font-size: inherit;
+}
+
+.ar mjx-container[display='true'] {
+    margin: 0.6em 0 !important;
+}
+
+.ar hr {
+    border: 0;
+    border-top: var(--rule);
+    margin: 0.8em 0;
+}
+
+/* --- figures: images and charts, caption below --- */
+.ar-figure {
+    margin: 0.9em 0;
+}
+
+.ar-figure img,
+.ar-figure svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.ar-figure figcaption {
+    margin-top: 0.45em;
+    font-size: 8.5pt;
+    line-height: 1.3;
+    text-align: left;
+    hyphens: manual;
+}
+
+.ar-label {
+    font-weight: bold;
+}
+
+/* --- tables: caption above, booktabs rules --- */
+.ar-table-caption {
+    margin: 0.9em 0 0.35em !important;
+    font-size: 8.5pt;
+    line-height: 1.3;
+    text-align: left;
+    text-indent: 0 !important;
+}
+
+.ar table {
+    width: 100%;
+    margin: 0 0 0.9em;
+    border-collapse: collapse;
+    border-top: 1pt solid var(--ink);
+    border-bottom: 1pt solid var(--ink);
+    font-size: 8.5pt;
+    line-height: 1.3;
+}
+
+.ar thead th {
+    border-bottom: 0.5pt solid var(--ink);
+}
+
+.ar th,
+.ar td {
+    padding: 2px 4px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.ar th {
+    font-weight: bold;
+}
+
+/* --- references: [1] [2] ... in small type --- */
+.ar-refs {
+    padding-left: 2.1em !important;
+    font-size: 8.5pt;
+    line-height: 1.3;
+    text-align: left;
+    hyphens: manual;
+}
+
+.ar-refs li::marker {
+    content: '[' counter(list-item) ']  ';
+}
+
+.ar-error {
+    color: #b00020;
+    font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+    font-size: 8pt;
+}
+
+/* ----------------------------------------------------------------- */
+/* 6. CLASSES for what markdown can't say: <div class="box"> ... </div> */
+/* ----------------------------------------------------------------- */
+
+/* framed block: definitions, theorems, highlighted remarks */
+.ar .box {
+    margin: 0.8em 0;
+    padding: 0.5em 0.7em;
+    border: var(--rule);
+}
+
+.ar .box > :first-child {
+    margin-top: 0;
+}
+
+.ar .center {
+    text-align: center;
+}
+
+.ar .small {
+    font-size: 8.5pt;
+}
+
+/* paragraphs inside start flush, e.g. a paragraph continuing after an equation */
+.ar .noindent,
+.ar .noindent p {
+    text-indent: 0 !important;
+}
