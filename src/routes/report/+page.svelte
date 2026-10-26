@@ -3,6 +3,7 @@
 	import { marked } from 'marked';
 	import '@fontsource-variable/source-sans-3';
 	import '@fontsource-variable/source-sans-3/wght-italic.css';
+	import '@fontsource-variable/jetbrains-mono'; // codes: l (L) and 1 clearly different
 	import { renderMarkdown, splitFrontmatter, waitForImages } from '$lib/paged/markdown';
 	import { paginate } from '$lib/paged/paginate';
 	import './page.css';
@@ -126,6 +127,7 @@
 	let pageCount = 0;
 	let tooTall = 0; // blocks taller than a page (cut); shown on screen and in data-overflow
 	let fontLink: HTMLLinkElement | null = null;
+	const WHOLE_TABLE_ROWS = 12; // tables up to this many rows move to the next page whole
 
 	onMount(async () => {
 		// ?file= picks another markdown file in .data/ (the page is prerendered, so read it here)
@@ -179,6 +181,12 @@
 	);
 	$: parameters = pairs(order.parameters);
 	$: nomenclature = pairs(order.nomenclature);
+
+	// a file name in pieces that each start with its "-": a line may only break before a
+	// hyphen, so a hyphen at the end of a line is never mistaken for a hyphenation
+	function nameParts(name: string): string[] {
+		return name.split(/(?=-)/);
+	}
 
 	// a list of one-key mappings: - Länge: 2000 mm  ->  [['Länge', '2000 mm']]
 	function pairs(list: Record<string, unknown>[] | undefined): string[][] {
@@ -307,8 +315,10 @@
 			}
 			for (const cell of table.querySelectorAll('td')) {
 				const status = words[cell.textContent?.trim().toLowerCase() ?? ''];
+				const onlyCode = cell.children.length === 1 && cell.firstElementChild!.tagName === 'CODE' &&
+					cell.textContent?.trim() === cell.firstElementChild!.textContent?.trim();
 				if (status) cell.classList.add('rp-status', `rp-status-${status}`);
-				else if (/^[^\s]*[_][^\s]*$|\.\w{2,5}$/.test(cell.textContent?.trim() ?? '')) cell.classList.add('rp-code');
+				else if (onlyCode || /^[^\s]*[_][^\s]*$|\.\w{2,5}$/.test(cell.textContent?.trim() ?? '')) cell.classList.add('rp-code');
 			}
 			// a paragraph right before a table introduces it: never left alone at a page bottom
 			if (table.previousElementSibling?.tagName === 'P') table.previousElementSibling.classList.add('rp-keep');
@@ -318,6 +328,17 @@
 				next.textContent?.trim() === next.firstElementChild!.textContent?.trim()) {
 				next.classList.add('rp-total');
 			}
+		}
+
+		// short tables are not split between pages: wrapped in a box the paginator moves
+		// whole (with the heading and intro line before it, and the total after it)
+		for (const table of source.querySelectorAll<HTMLTableElement>(':scope > table')) {
+			if ((table.tBodies[0]?.rows.length ?? 0) > WHOLE_TABLE_ROWS) continue;
+			const total = table.nextElementSibling?.classList.contains('rp-total') ? table.nextElementSibling : null;
+			const box = document.createElement('div');
+			box.className = 'rp-whole';
+			table.replaceWith(box);
+			box.append(table, ...(total ? [total] : []));
 		}
 	}
 
@@ -404,7 +425,11 @@
 								<dl>
 									{#each orderRows as [name, value]}
 										<dt>{name}</dt>
-										<dd class:rp-code={name === label.file}>{value}</dd>
+										{#if name === label.file}
+											<dd class="rp-code">{#each nameParts(String(value)) as part, i}{#if i}<wbr />{/if}<span class="rp-nobreak">{part}</span>{/each}</dd>
+										{:else}
+											<dd>{value}</dd>
+										{/if}
 									{/each}
 								</dl>
 							</section>

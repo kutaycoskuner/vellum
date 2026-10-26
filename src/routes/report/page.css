@@ -18,7 +18,7 @@
     --warn: #c58a1a;
     --fail: #d0473c;
     --font: 'Source Sans 3 Variable', 'Source Sans Pro', Helvetica, sans-serif;
-    --mono: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    --mono: 'JetBrains Mono Variable', Consolas, 'Liberation Mono', monospace; /* bundled: same on every OS, l and 1 distinct */
     --top: 30mm; /* room for the logo */
     --side: 22mm;
     --bottom: 32mm; /* room for the three-line footer */
@@ -158,7 +158,8 @@
     color: var(--text);
 }
 
-.rp > :first-child {
+.rp > :first-child,
+.rp > .rp-whole:first-child > table {
     margin-top: 0;
 }
 
@@ -451,8 +452,18 @@
 
 .rp .rp-code {
     font-family: var(--mono);
-    font-size: 0.9em;
+    font-size: 0.85em;
     color: var(--text);
+}
+
+.rp .rp-code code {
+    font-size: inherit;
+    color: inherit;
+}
+
+/* a piece of a file name (page 1): breaks only between pieces */
+.rp .rp-nobreak {
+    white-space: nowrap;
 }
 
 .rp .rp-status {
